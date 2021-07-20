@@ -38,6 +38,9 @@
     <div class="wrapper" data-controller="vertical-navbar">
 
       <%= render 'layouts/header_new_styling' %>
+      <% if current_page?(styleguide_project_new_styling_path) %>
+        <%= render 'shared/project_new_styling' %>
+      <% end %>
 
       <div class="page-wrapper content closed-nav-vertical" data-vertical-navbar-target='Content'>
         <%= yield %>
