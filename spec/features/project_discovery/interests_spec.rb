@@ -34,16 +34,4 @@ describe 'interests', js: true do
       expect(page).to have_content 'FOLLOW'
     end
   end
-
-  context 'on missions page' do
-    it 'has follow buttons for featured projects' do
-      visit root_path
-
-      expect(page).to have_content 'FOLLOW'
-      first('.featured-mission__project__interest').click
-      expect(page).to have_content 'UNFOLLOW'
-      first('.featured-mission__project__interest').click
-      expect(page).to have_content 'FOLLOW'
-    end
-  end
 end

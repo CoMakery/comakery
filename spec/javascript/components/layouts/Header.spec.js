@@ -4,7 +4,7 @@ import Header from 'components/layouts/Header'
 
 describe('Header', () => {
   it('renders correctly without props', () => {
-    const wrapper = shallow(<Header isLoggedIn currentPath="/featured" />)
+    const wrapper = shallow(<Header isLoggedIn currentPath="/projects/mine" />)
 
     expect(wrapper).toMatchSnapshot()
     expect(wrapper.exists('.header')).toBe(true)
@@ -30,10 +30,9 @@ describe('Header', () => {
   })
 
   it('renders correctly with root path and loggedIn flag', () => {
-    const wrapper = shallow(<Header isLoggedIn currentPath="/" />)
+    const wrapper = shallow(<Header isLoggedIn currentPath="/projects/mine" />)
 
-    expect(wrapper.find('.header--nav--links--current').text()).toBe('Missions')
-    expect(wrapper.find('.header--nav--links--current').props().href).toBe('/')
+    expect(wrapper.find('.header--nav--links--current').props().href).toBe('/projects/mine')
   })
 
   it('renders correctly with My Account path and loggedIn flag', () => {

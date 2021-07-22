@@ -9,28 +9,6 @@ describe 'my account', js: true do
   let!(:project) { create :project, mission_id: mission.id, visibility: 'public_listed', status: 0 }
   let!(:project_member) { create(:project) }
 
-  scenario 'user gets redirected to signup on create project click' do
-    visit '/'
-    expect(page.current_url).to have_content '/'
-    expect(page).to have_content('Discover Missions With Cutting Edge Projects')
-    stub_airtable
-    first('a.featured-mission__create-project').click
-
-    expect(find('.accounts-new')).to have_content 'Sign Up With Email'
-    expect(page.current_url).to have_content '/accounts/new'
-  end
-
-  scenario 'user gets redirected to signup on interest click' do
-    visit '/'
-    expect(page.current_url).to have_content '/'
-    expect(page).to have_content('Discover Missions With Cutting Edge Projects')
-    stub_airtable
-    find('.featured-mission__project__interest').click
-
-    expect(find('.accounts-new')).to have_content 'Sign Up With Email'
-    expect(page.current_url).to have_content '/accounts/new'
-  end
-
   scenario 'user gets redirected to sign in when accessing My Tasks' do
     visit '/tasks'
     expect(page.current_url).to include('/session/new')
@@ -89,25 +67,6 @@ describe 'my account', js: true do
     stub_const('ENV', ENV.to_hash.merge('METAMASK_LOGIN' => 'true'))
     visit new_account_path
     expect(page).to have_selector 'button', text: 'MetaMask', exact_text: true
-  end
-
-  scenario 'featured page is available after signup' do
-    login(confirmed_account)
-    mission.image = Rack::Test::UploadedFile.new(
-      Rails.root.join('spec/fixtures/helmet_cat.png').to_s,
-      'image/png'
-    )
-    mission.save
-
-    visit '/'
-    expect(page.current_url).to have_content '/'
-    expect(page).to have_content('Discover Missions With Cutting Edge Projects')
-    stub_airtable
-    expect(page).to have_selector('.featured-mission__project__interest')
-    find('.featured-mission__project__interest').click
-
-    expect(find('.featured-missions')).to have_content('UNFOLLOW')
-    expect(confirmed_account.project_roles.count).to be_positive
   end
 
   scenario 'account page is available after signup' do

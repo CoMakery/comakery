@@ -8,12 +8,6 @@ const navContent = (isLoggedIn, isAdmin, isWhitelabel, projectAwardsVisible, cur
     { !isLoggedIn &&
       <div className="header--nav--links">
         { !isWhitelabel &&
-          <a href="/" className={(currentPath === '/') ? 'header--nav--links--current' : null}>
-            Missions
-          </a>
-        }
-
-        { !isWhitelabel &&
           <a href="/projects" className={(currentPath === '/projects') ? 'header--nav--links--current' : null}>
             Projects
           </a>
@@ -55,12 +49,6 @@ const navContent = (isLoggedIn, isAdmin, isWhitelabel, projectAwardsVisible, cur
 
     { isLoggedIn &&
       <div className="header--nav--links">
-        { !isWhitelabel &&
-          <a href="/" className={(currentPath === '/') ? 'header--nav--links--current' : null}>
-            Missions
-          </a>
-        }
-
         { isAdmin &&
           <React.Fragment>
             <a href="/accounts" className={currentPath.match(/^\/accounts$/) ? 'header--nav--links--current' : null}>

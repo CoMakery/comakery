@@ -42,17 +42,6 @@ RSpec.describe PagesController, type: :controller do
     expect(response).to render_template('pages/user_agreement')
   end
 
-  it 'access featured page' do
-    get :featured
-    expect(response.status).to eq(200)
-  end
-
-  it 'basic auth' do
-    ENV.stub(:key?) { 'test:test' }
-    ENV.stub(:fetch) { 'test:test' }
-    get :featured
-  end
-
   it 'redirects from styleguide page' do
     get :styleguide
     expect(response.status).to eq(302)
@@ -64,12 +53,5 @@ RSpec.describe PagesController, type: :controller do
     get :styleguide
     Rails.env = env_backup
     expect(response.status).to eq(200)
-  end
-
-  it 'is unavailable_for_whitelabel' do
-    create :active_whitelabel_mission
-
-    get :featured
-    expect(response).to redirect_to(new_session_url)
   end
 end

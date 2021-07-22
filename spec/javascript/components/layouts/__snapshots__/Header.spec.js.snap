@@ -25,13 +25,7 @@ exports[`Header renders correctly without props 1`] = `
         className="header--nav--links"
       >
         <a
-          className={null}
-          href="/"
-        >
-          Missions
-        </a>
-        <a
-          className={null}
+          className="header--nav--links--current"
           href="/projects/mine"
         >
           My Projects
