@@ -94,14 +94,12 @@ Rails.application.routes.draw do
     resources :project_roles, only: %i[create destroy], defaults: { format: :json }
 
     namespace :dashboard do
+      namespace :transfers do
+        resources :charts, only: [:index]
+        resources :exports, only: [:create]
+      end
       resources :transfers, only: %i[index show edit update new create] do
-        collection do
-          get :fetch_chart_data
-          post :export
-        end
-        member do
-          patch :prioritize
-        end
+        resource :prioritizes, only: [:update], controller: 'transfers/prioritizes'
       end
       resources :accounts, only: [:index, :show, :create] do
         collection do

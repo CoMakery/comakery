@@ -1,33 +1,32 @@
 <turbo-frame id="chart-data" target="_top">
-
-  <% @negative = @transfer_type_name == 'burn' %>
+  <% burn_transfer_type = @transfer_type_name == 'burn' %>
   <div
     class="transfers-chart transfers-filters animated fadeIn faster"
     data-controller="transfers-chart"
     data-transfers-chart-stacked-chart-scale-x="<%= params[:duration] || 'Year' %>"
     data-transfers-chart-stacked-chart-data-status="Created"
-    data-transfers-chart-stacked-chart-data-day="<%= params[:duration] == 'Day' ? @project.transfers_stacked_chart_day(@transfers, negative: @negative).to_json : '' %>"
-    data-transfers-chart-stacked-chart-data-week="<%= params[:duration] == 'Week' ? @project.transfers_stacked_chart_week(@transfers, negative: @negative).to_json : '' %>"
-    data-transfers-chart-stacked-chart-data-month="<%= params[:duration] == 'Month' ? @project.transfers_stacked_chart_month(@transfers, negative: @negative).to_json : '' %>"
-    data-transfers-chart-stacked-chart-data-year="<%= (params[:duration] == 'Year' || params[:duration].blank?) ? @project.transfers_stacked_chart_year(@transfers, negative: @negative).to_json : '' %>"
+    data-transfers-chart-stacked-chart-data-day="<%= params[:duration] == 'Day' ? @project.transfers_stacked_chart_day(@transfers, negative: burn_transfer_type).to_json : '' %>"
+    data-transfers-chart-stacked-chart-data-week="<%= params[:duration] == 'Week' ? @project.transfers_stacked_chart_week(@transfers, negative: burn_transfer_type).to_json : '' %>"
+    data-transfers-chart-stacked-chart-data-month="<%= params[:duration] == 'Month' ? @project.transfers_stacked_chart_month(@transfers, negative: burn_transfer_type).to_json : '' %>"
+    data-transfers-chart-stacked-chart-data-year="<%= (params[:duration] == 'Year' || params[:duration].blank?) ? @project.transfers_stacked_chart_year(@transfers, negative: burn_transfer_type).to_json : '' %>"
     data-transfers-chart-donut-chart-data="<%= @project.transfers_donut_chart(@transfers).to_json %>"
-    data-transfers-chart-token-symbol="<%= @project_token&.symbol %>"
-    data-transfers-chart-total="<%= @transfers_not_burned_total %>"
+    data-transfers-chart-token-symbol="<%= @project.token&.symbol %>"
+    data-transfers-chart-total="<%= @unfiltered_transfers.sum(&:total_amount) %>"
     data-transfers-chart-total-filtered="<%= @transfers.sum(&:total_amount) %>"
-    data-transfers-chart-decimals="<%= @project_token&.decimal_places || 0 %>"
+    data-transfers-chart-decimals="<%= @project.token&.decimal_places || 0 %>"
     data-transfers-chart-colors="<%= @project.transfers_chart_colors.to_json %>"
-    data-transfers-chart-transfer-type-burn="<%= @negative %>">
+    data-transfers-chart-transfer-type-burn="<%= burn_transfer_type %>">
     <h2>transfer history</h2>
 
     <div class="transfers-chart__info">
       <div class="transfers-filters--filter">
         <div class="transfers-filters--filter--options">
-          <% ['Year', 'Month', 'Week', 'Day'].each do |scale_x| %>
+          <% %w[Year Month Week Day].each do |scale_x| %>
             <div
               data-target="transfers-chart.scales"
               data-scale-x="<%= scale_x %>"
               class="<%= scale_x == (params[:duration] || 'Year') ? 'transfers-filters--filter--options__active' : nil %>">
-              <%= link_to scale_x, fetch_chart_data_project_dashboard_transfers_path(@project, duration: scale_x, q: @filter_params, page: params[:page]), data: { turbo_frame: "chart-data" } %>
+              <%= link_to scale_x, project_dashboard_transfers_charts_path(@project, duration: scale_x, q: params[:q]&.to_unsafe_h, page: params[:page]), data: { turbo_frame: "chart-data" } %>
             </div>
           <% end %>
         </div>
@@ -38,18 +37,18 @@
       <div>
         <svg id="donut-chart" width="300" height="300"></svg>
         <div class="donut-amount" data-target='transfers-chart.donutAmountFiltered'>
-          <% if @transfers.sum(&:total_amount) != @transfers_unfiltered.sum(&:total_amount) %>
-            <%= "#{@negative ? '-' : ''} #{@transfers.sum(&:total_amount)} #{@project_token&.symbol} Filtered Total" %>
+          <% if @transfers.sum(&:total_amount) != @unfiltered_transfers.sum(&:total_amount) %>
+            <%= "#{burn_transfer_type ? '-' : ''} #{@transfers.sum(&:total_amount)} #{@project.token&.symbol} Filtered Total" %>
           <% end %>
         </div>
         <div class="donut-amount" data-target='transfers-chart.donutAmount'>
-          <%= "#{@transfers_not_burned_total} #{@project_token&.symbol} #{@negative ? 'Net' : '' } Total" %>
+          <%= "#{@unfiltered_transfers.sum(&:total_amount)} #{@project.token&.symbol} #{burn_transfer_type ? 'Net' : '' } Total" %>
         </div>
       </div>
       <div id="stacked-chart-tooltip"></div>
       <div class="transfers-filters--filter">
         <div class="stacked-chart-legend">
-          <% @transfers_chart_colors_objects.each do |type, color| %>
+          <% @project.transfers_chart_colors_objects.each do |type, color| %>
             <% next unless type.default %>
             <div class="col-sm stacked-chart-legend__type <%= ransack_filter_present?(@q, 'transfer_type_id', 'eq', type.id.to_s) ? 'stacked-chart-legend__type--active' : nil %>">
               <div class="stacked-chart-legend__type__color" style="background-color: <%= color %>"></div>
@@ -61,10 +60,10 @@
                       class: "stacked-chart-legend__type__name"
                   ) %>
               <div class="col-sm stacked-chart-legend__type__percentage">
-                <% type_count = @transfer_types_and_counts[type.name] %>
+                <% type_count = @transfer_type_counts[type.id] %>
                 <%= type_count %>
                 <div style="color: <%= color %>; float: right;">
-                  <% percentage = @transfers_totals.size == 0 ? 0 : ((type_count.to_f / @transfers_totals.size.to_f) * 100).to_i %>
+                  <% percentage = @unfiltered_transfers.size.zero? ? 0 : ((type_count.to_f / @unfiltered_transfers.size.to_f) * 100).to_i %>
                   <%= "#{percentage}%" %>
                 </div>
               </div>

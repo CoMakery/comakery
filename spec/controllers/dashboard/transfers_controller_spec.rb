@@ -76,7 +76,7 @@ RSpec.describe Dashboard::TransfersController, type: :controller do
     end
 
     context 'when failure' do
-      context 'when when statement invalid error' do
+      context 'when statement invalid error' do
         before do
           allow_any_instance_of(Ransack::Search)
             .to receive(:result).and_raise(ActiveRecord::StatementInvalid)
@@ -252,89 +252,6 @@ RSpec.describe Dashboard::TransfersController, type: :controller do
     end
   end
 
-  describe 'GET #fetch_chart_data' do
-    let(:project) do
-      FactoryBot.create :project, account: account, token: token, visibility: :public_listed,
-                                  require_confidentiality: false
-    end
-
-    context 'when success' do
-      shared_examples 'assign data and render chart partial' do
-        it do
-          expect(response).to render_template 'dashboard/transfers/_chart'
-          expect(assigns(:project)).to eq project
-          expect(assigns(:page)).to eq 1
-          expect(assigns(:transfers_totals)).to eq TransferType.none
-          expect(assigns(:transfers)).to eq []
-          expect(assigns(:transfers_not_burned_total)).to eq 0
-          expect(assigns(:transfer_types_and_counts)).to eq({})
-          expect(assigns(:transfers_chart_colors_objects).values).to match_array ['#73C30E', '#7B00D7']
-          expect(assigns(:project_token)).to eq token
-          expect(assigns(:filter_params)).to eq 'filter' => 'search_query'
-        end
-      end
-
-      context 'when authenticated' do
-        before do
-          get :fetch_chart_data, params: { project_id: project.id, q: { filter: 'search_query' } }
-        end
-
-        it_behaves_like 'assign data and render chart partial'
-      end
-
-      context 'when not authenticated while project does not require confidentiality' do
-        before do
-          logout
-          get :fetch_chart_data, params: { project_id: project.id, q: { filter: 'search_query' } }
-        end
-
-        it_behaves_like 'assign data and render chart partial'
-      end
-    end
-
-    context 'when failure' do
-      context 'when not authorized' do
-        let(:project) do
-          FactoryBot.create :project, account: account, token: token, visibility: :public_listed,
-                                      require_confidentiality: true
-        end
-        let(:other_account) { FactoryBot.create(:account) }
-
-        before do
-          login(other_account)
-          get :fetch_chart_data, params: { project_id: project.id }
-        end
-
-        it 'should redirect to root page' do
-          expect(response).to redirect_to root_path
-          expect(assigns(:project)).to eq project
-        end
-      end
-
-      context 'when not found' do
-        before do
-          get :fetch_chart_data, params: { project_id: 'fake' }
-        end
-
-        it 'should redirect to 404 page' do
-          expect(response).to redirect_to '/404.html'
-          expect(assigns(:project)).to eq nil
-        end
-      end
-    end
-  end
-
-  describe 'POST #export' do
-    before { ActiveJob::Base.queue_adapter = :test }
-
-    after { ActiveJob::Base.queue_adapter.enqueued_jobs.clear }
-
-    subject { post :export, params: { project_id: project.id } }
-
-    it { is_expected.to redirect_to(project_dashboard_transfers_path(project)) }
-    it { expect { subject }.to enqueue_job(ProjectExportTransfersJob) }
-  end
-
   describe 'GET #new' do
     let(:transfer_params) { { description: Faker::Lorem.sentence(word_count: 3), amount: 10 } }
 
@@ -416,16 +333,6 @@ RSpec.describe Dashboard::TransfersController, type: :controller do
           expect(response).to redirect_to(project_dashboard_transfers_path(project))
         end.not_to change(project.awards, :count)
       end
-    end
-  end
-
-  describe 'prioritize' do
-    subject { patch :prioritize, params: { project_id: project.to_param, id: transfer.to_param } }
-
-    it 'update' do
-      subject
-      expect(response).to redirect_to(project_dashboard_transfers_path(project))
-      expect(flash[:notice]).to match('Transfer will be sent soon')
     end
   end
 end

@@ -8,9 +8,9 @@
 
     <turbo-frame id="chart-data"
                  target="_top"
-                 src="<%= fetch_chart_data_project_dashboard_transfers_path(@project,
-                                                                            duration: (params[:duration] || 'Year'),
-                                                                            q: @filter_params, page: params[:page]) %>">
+                 src="<%= project_dashboard_transfers_charts_path(@project,
+                                                                  duration: (params[:duration] || 'Year'),
+                                                                  q: params[:q]&.to_unsafe_h, page: params[:page]) %>">
       <div class="centered"><%= image_tag 'spinner.gif' %></div>
     </turbo-frame>
 

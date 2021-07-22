@@ -74,7 +74,7 @@ class Award < ApplicationRecord
 
   before_validation :ensure_proof_id_exists
   before_validation :calculate_total_amount
-  before_validation :set_paid_status_if_project_has_no_token, if: -> { status == 'accepted' && !project.token }
+  before_validation :set_paid_status_if_project_has_no_token, if: -> { status == 'accepted' && !project&.token }
   before_validation :make_unpublished_if_award_type_is_not_ready, if: -> { status == 'ready' && !award_type&.public_state? }
   before_validation :store_license_hash, if: -> { status == 'started' && agreed_to_license_hash.nil? }
   before_validation :set_expires_at, if: -> { status == 'started' && expires_at.nil? }
@@ -147,6 +147,10 @@ class Award < ApplicationRecord
 
   def self.issuer_first_name_order_string(direction)
     "issuers.first_name #{direction}, issuers.last_name #{direction}, awards.created_at ASC"
+  end
+
+  def self.grouped_type_counts
+    group(:transfer_type_id).pluck(:transfer_type_id, 'count(awards.transfer_type_id)').to_h
   end
 
   def ensure_proof_id_exists
