@@ -135,7 +135,7 @@ class Token < ApplicationRecord
 
   def supports_batch_transfers?
     _token_type_token_release_schedule? \
-    || (_token_type_erc20? && batch_contract_address)
+    || (_token_type_erc20? && batch_contract_address.present?)
   end
 
   private

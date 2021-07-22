@@ -266,7 +266,7 @@ describe Account do
   end
 
   describe 'associations' do
-    let!(:account) { create(:account) }
+    let!(:account) { create(:account, unverified: true) }
     let!(:project) { create(:project, account: account) }
     let!(:admin_project) { create(:project) }
     let!(:admin_award_type) { create(:award_type, project: admin_project) }

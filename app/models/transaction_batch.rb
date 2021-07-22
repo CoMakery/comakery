@@ -8,8 +8,8 @@ class TransactionBatch < ApplicationRecord
   has_many :blockchain_transactables_token_opt_ins, through: :batch_transactables, source: :blockchain_transactable, source_type: 'TokenOptIn'
 
   def blockchain_transactables=(transactables)
-    if transactables.respond_to?(:find_each)
-      transactables.find_each do |transactable|
+    if transactables.respond_to?(:each)
+      transactables.each do |transactable|
         self.blockchain_transactables = transactable
       end
     else

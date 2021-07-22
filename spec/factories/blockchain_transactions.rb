@@ -11,5 +11,35 @@ FactoryBot.define do
       source { '0xbbc7e3ee37977ca508f63230471d1001d22bfdd5' }
       current_block { 0 }
     end
+
+    trait :erc20_with_batch do
+      network { :ethereum_ropsten }
+      token { association :token, :erc20_with_batch }
+      source { '0xbbc7e3ee37977ca508f63230471d1001d22bfdd5' }
+      current_block { 0 }
+    end
+
+    trait :created do
+      status { :created }
+    end
+
+    trait :cancelled do
+      status { :cancelled }
+      tx_raw { '{}' }
+    end
+
+    trait :pending do
+      status { :pending }
+      tx_hash { '0' }
+    end
+
+    trait :succeed do
+      status { :succeed }
+      tx_hash { '0' }
+    end
+
+    trait :failed do
+      status { :failed }
+    end
   end
 end

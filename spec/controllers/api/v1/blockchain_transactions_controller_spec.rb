@@ -13,7 +13,6 @@ RSpec.describe Api::V1::BlockchainTransactionsController, type: :controller do
   let!(:active_whitelabel_mission) { create(:active_whitelabel_mission) }
   let!(:blockchain_transaction) { create(:blockchain_transaction) }
   let!(:project) { blockchain_transaction.blockchain_transactable.project }
-
   let!(:valid_create_attributes) do
     {
       transaction: {
@@ -135,7 +134,7 @@ RSpec.describe Api::V1::BlockchainTransactionsController, type: :controller do
             params[:project_id] = project.id
 
             post :create, params: params
-            expect(response).to have_http_status(:created)
+            expect(response).to have_http_status(:no_content)
           end
         end
 
@@ -253,70 +252,6 @@ RSpec.describe Api::V1::BlockchainTransactionsController, type: :controller do
 
         post :create, params: params
         expect(response).to have_http_status(:no_content)
-      end
-    end
-
-    context 'with custom blockchain_transactable_type' do
-      let!(:transfer_rule) { create(:transfer_rule, token: project.token) }
-
-      it 'creates a new BlockchainTransaction for the blockchain_transactable_type' do
-        params = build(:api_signed_request, valid_create_attributes.merge(blockchain_transactable_type: 'transfer_rules'), api_v1_project_blockchain_transactions_path(project_id: project.id), 'POST')
-        params[:project_id] = project.id
-
-        expect do
-          post :create, params: params
-        end.to change(project.blockchain_transactions, :count).by(1)
-
-        expect(project.blockchain_transactions.last).to be_a(BlockchainTransactionTransferRule)
-      end
-
-      it 'returns a success response' do
-        params = build(:api_signed_request, valid_create_attributes.merge(blockchain_transactable_type: 'transfer_rules'), api_v1_project_blockchain_transactions_path(project_id: project.id), 'POST')
-        params[:project_id] = project.id
-
-        post :create, params: params
-        expect(response).to have_http_status(:created)
-      end
-
-      context 'and valid custom blockchain_transactable_id' do
-        subject do
-          params = build(
-            :api_signed_request,
-            valid_create_attributes.merge(
-              blockchain_transactable_type: 'transfer_rules',
-              blockchain_transactable_id: transfer_rule.id
-            ),
-            api_v1_project_blockchain_transactions_path(
-              project_id: project.id
-            ),
-            'POST'
-          )
-          params[:project_id] = project.id
-
-          post :create, params: params
-        end
-
-        it 'creates a new BlockchainTransaction for the blockchain_transactable_id' do
-          expect { subject }.to change(project.blockchain_transactions, :count).by(1)
-
-          expect(project.blockchain_transactions.last).to be_a(BlockchainTransactionTransferRule)
-          expect(project.blockchain_transactions.last.blockchain_transactable).to eq(transfer_rule)
-        end
-
-        it 'returns a success response' do
-          subject
-          expect(response).to have_http_status(:created)
-        end
-      end
-
-      context 'and invalid custom blockchain_transactable_id' do
-        it 'returns an error' do
-          params = build(:api_signed_request, valid_create_attributes.merge(blockchain_transactable_id: 0), api_v1_project_blockchain_transactions_path(project_id: project.id), 'POST')
-          params[:project_id] = project.id
-
-          post :create, params: params
-          expect(response).to have_http_status(:no_content)
-        end
       end
     end
   end

@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "transfer_button_batch_#{@project.id}", target: "_top" do %>
-    <% if @project.awards.ready_for_batch_blockchain_transaction.any? %>
+    <% if NextBlockchainTransactables.new(project: @project, target: :manual, transactable_classes: [Award]).call.any? %>
       <div class="transfer-button transfer-button__all">
         <% if @project.token.blockchain.supported_by_wallet_connect? %>
           <a

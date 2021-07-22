@@ -35,7 +35,7 @@ class Account < ApplicationRecord
   has_many :projects_involved, through: :project_roles, source: :project
   has_many :admin_projects, -> { where(project_roles: { role: :admin }) }, through: :project_roles, source: :project
   has_many :experiences # rubocop:todo Rails/HasManyOrHasOneDependent
-  has_many :verifications # rubocop:todo Rails/HasManyOrHasOneDependent
+  has_many :verifications, dependent: :destroy
   has_many :admin_awards, through: :admin_projects, source: :awards
   has_many :award_types, through: :projects
   has_many :team_award_types, through: :team_projects, source: :award_types

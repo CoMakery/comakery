@@ -15,8 +15,15 @@ class Mom
       date_of_birth: '1990/01/01',
       country: 'United States of America',
       specialty: Specialty.find_or_create_by(name: 'General'),
-      password: valid_password
+      password: valid_password,
+      verifications: [Verification.new(passed: true, provider: nil, max_investment_usd: 100000)]
     }
+
+    if attrs[:unverified]
+      defaults.delete(:verifications)
+      attrs.delete(:unverified)
+    end
+
     Account.new(defaults.merge(attrs))
   end
 
@@ -30,7 +37,8 @@ class Mom
       country: 'United States of America',
       specialty: Specialty.find_or_create_by(name: 'General'),
       password: valid_password,
-      managed_account_id: '1c182a7b-4f22-4636-9047-8bab32352949'
+      managed_account_id: '1c182a7b-4f22-4636-9047-8bab32352949',
+      verifications: [Verification.new(passed: true, provider: nil, max_investment_usd: 100000)]
     }
     Account.new(defaults.merge(attrs))
   end
@@ -312,7 +320,8 @@ class Mom
 
   def static_blockchain_transaction(**attrs)
     token = create(:comakery_dummy_token)
-    project = create(:project, id: 45, token: token)
+    hot_wallet = build(:wallet, account: nil, source: :hot_wallet, _blockchain: token._blockchain, address: build(:ethereum_address_1))
+    project = create(:project, id: 45, token: token, hot_wallet: hot_wallet, hot_wallet_mode: :auto_sending)
     account = create(:account)
 
     account.wallets.find_by(_blockchain: project.token._blockchain) || create(

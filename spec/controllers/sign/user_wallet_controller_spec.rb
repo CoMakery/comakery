@@ -49,17 +49,14 @@ RSpec.describe Sign::UserWalletController, type: :controller, vcr: true do
       subject { get :new, params: { project_id: transfer.project.id, source: 'dummy_source_address' } }
 
       before do
+        transfer.project.update(transfer_batch_size: 100)
         transfer.latest_blockchain_transaction.cancelled!
         transfer.clone_on_assignment
       end
 
-      it 'creates a correct BlockchainTransaction' do
+      example 'creates a correct BlockchainTransaction and sets transactables' do
         subject
         expect(BlockchainTransaction.last).to be_a(BlockchainTransactionAward)
-      end
-
-      it 'sets transactables' do
-        subject
         expect(BlockchainTransaction.last.blockchain_transactables.size).to eq(2)
       end
     end

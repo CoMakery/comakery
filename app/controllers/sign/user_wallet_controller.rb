@@ -75,7 +75,11 @@ class Sign::UserWalletController < ApplicationController
       elsif params[:token_id]
         Token.find(params.require(:token_id))
       elsif project_for_batch_awards
-        project_for_batch_awards.awards.ready_for_batch_blockchain_transaction.limit(250) if project_for_batch_awards.awards.ready_for_batch_blockchain_transaction.any?
+        NextBlockchainTransactables.new(
+          project: project_for_batch_awards,
+          target: :manual,
+          transactable_classes: [Award]
+        ).call
       end
     end
 
