@@ -212,39 +212,53 @@ RSpec.describe Dashboard::AccountsController, type: :controller do
   end
 
   describe 'POST #refresh_from_blockchain' do
+    let(:account_token_record) { create(:blockchain_transaction_account_token_record_algo).blockchain_transactable }
+
     before { login(project.account) }
 
-    context 'when accounts have been refreshed recently' do
+    context 'when accounts have been refreshed recently', :vcr do
       before do
-        create(:account_token_record, token: account_token_record.token, status: :synced, synced_at: Time.current)
+        account_token_record.update!(status: :synced, synced_at: Time.zone.now)
       end
 
       it 'does not run refresh job' do
         expect(AlgorandSecurityToken::AccountTokenRecordsSyncJob).not_to receive(:perform_now)
+
         post :refresh_from_blockchain, params: { project_id: project.id }
 
         expect(response).to redirect_to(project_dashboard_accounts_path(project))
+        expect(account_token_record.reload.status).to eq 'synced'
       end
     end
 
     context 'when accounts have not been refreshed recently' do
       context 'with algorand security token', :vcr do
-        let(:account_token_record) { create(:blockchain_transaction_account_token_record_algo).blockchain_transactable }
+        before do
+          account_token_record.update!(status: :synced, synced_at: 20.minutes.ago)
+        end
 
         it 'runs refresh job' do
           expect(AlgorandSecurityToken::AccountTokenRecordsSyncJob).to receive(:perform_now).and_return(true)
           post :refresh_from_blockchain, params: { project_id: project.id }
 
           expect(response).to redirect_to(project_dashboard_accounts_path(project))
+          expect(account_token_record.reload.status).to eq 'outdated'
         end
       end
 
       context 'with comakery security token', :vcr do
+        let(:account_token_record) { create(:account_token_record) }
+
+        before do
+          account_token_record.update!(status: :synced, synced_at: 20.minutes.ago)
+        end
+
         it 'runs refresh job' do
           expect(BlockchainJob::ComakerySecurityTokenJob::AccountTokenRecordsSyncJob).to receive(:perform_now).and_return(true)
           post :refresh_from_blockchain, params: { project_id: project.id }
 
           expect(response).to redirect_to(project_dashboard_accounts_path(project))
+          expect(account_token_record.reload.status).to eq 'outdated'
         end
       end
     end

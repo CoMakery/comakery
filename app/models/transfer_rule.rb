@@ -18,7 +18,7 @@ class TransferRule < ApplicationRecord
   validates :lockup_until, inclusion: { in: LOCKUP_UNTIL_MIN..LOCKUP_UNTIL_MAX }
   validate :groups_belong_to_same_token
 
-  enum status: { created: 0, pending: 1, synced: 2, failed: 3 }
+  enum status: { created: 0, pending: 1, synced: 2, failed: 3, outdated: 4 }
   scope :not_synced, -> { where.not(status: :synced) }
 
   def lockup_until
@@ -42,7 +42,10 @@ class TransferRule < ApplicationRecord
     end
 
     def replace_existing_rule
-      TransferRule.where(sending_group: sending_group, receiving_group: receiving_group, status: :synced).where.not(id: id).destroy_all
+      TransferRule
+        .where(sending_group: sending_group, receiving_group: receiving_group, status: :synced)
+        .where.not(id: id)
+        .outdate_all
     end
 
     def destroy_self_if_lockup_zero

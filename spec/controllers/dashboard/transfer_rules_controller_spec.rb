@@ -165,25 +165,27 @@ RSpec.describe Dashboard::TransferRulesController, type: :controller do
 
   describe 'POST #refresh_from_blockchain' do
     context 'when rules have been refreshed recently' do
-      before do
-        create(:transfer_rule, token: token, status: :synced, synced_at: Time.current)
-      end
+      let!(:transfer_rule) { create(:transfer_rule, token: token, status: :synced, synced_at: Time.current) }
 
       it 'does not run refresh job' do
         expect(AlgorandSecurityToken::TransferRulesSyncJob).not_to receive(:perform_now)
         post :refresh_from_blockchain, params: { project_id: project.to_param }
 
         expect(response).to redirect_to(project_dashboard_transfer_rules_path(project))
+        expect(transfer_rule.reload.status).to eq 'synced'
       end
     end
 
     context 'when rules have not been refreshed recently' do
+      let!(:transfer_rule) { create(:transfer_rule, token: token, status: :synced, synced_at: 20.minutes.ago) }
+
       context 'with algorand security token', :vcr do
         it 'runs refresh job' do
           expect(AlgorandSecurityToken::TransferRulesSyncJob).to receive(:perform_now).and_return(true)
           post :refresh_from_blockchain, params: { project_id: project.to_param }
 
           expect(response).to redirect_to(project_dashboard_transfer_rules_path(project))
+          expect(transfer_rule.reload.status).to eq 'outdated'
         end
       end
 
@@ -196,6 +198,7 @@ RSpec.describe Dashboard::TransferRulesController, type: :controller do
           post :refresh_from_blockchain, params: { project_id: project.to_param }
 
           expect(response).to redirect_to(project_dashboard_transfer_rules_path(project))
+          expect(transfer_rule.reload.status).to eq 'outdated'
         end
       end
     end

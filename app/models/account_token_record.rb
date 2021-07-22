@@ -22,8 +22,7 @@ class AccountTokenRecord < ApplicationRecord
   validates :lockup_until, inclusion: { in: LOCKUP_UNTIL_MIN..LOCKUP_UNTIL_MAX }
   validates :max_balance, inclusion: { in: BALANCE_MIN..BALANCE_MAX }
 
-  enum status: { created: 0, pending: 1, synced: 2, failed: 3 }
-  scope :not_synced, -> { where.not(status: :synced) }
+  enum status: { created: 0, pending: 1, synced: 2, failed: 3, outdated: 4 }
 
   delegate :_blockchain, :blockchain, to: :token
 
@@ -57,6 +56,9 @@ class AccountTokenRecord < ApplicationRecord
     end
 
     def replace_existing_record
-      AccountTokenRecord.where(account_id: account_id, token_id: token_id, status: :synced).where.not(id: id).destroy_all
+      AccountTokenRecord
+        .where(account_id: account_id, token_id: token_id, status: :synced)
+        .where.not(id: id)
+        .outdate_all
     end
 end

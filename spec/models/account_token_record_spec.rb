@@ -155,8 +155,8 @@ describe AccountTokenRecord do
         account_token_record.synced!
       end
 
-      it 'deletes all synced records with the same combination of token and account' do
-        expect { account_token_record_dup.reload }.to raise_error ActiveRecord::RecordNotFound
+      it 'outdate all synced records with the same combination of token and account' do
+        expect(account_token_record_dup.reload.status).to eq 'outdated'
       end
 
       it 'doesnt delete records with same account but different token' do

@@ -81,7 +81,7 @@ describe TransferRule do
       end
 
       it 'deletes all synced rules with the same combination of token, receiving/sending groups' do
-        expect { transfer_rule_dup.reload }.to raise_error ActiveRecord::RecordNotFound
+        expect(transfer_rule_dup.reload.status).to eq 'outdated'
       end
 
       it 'doesnt delete rules with same token but different receiving/sending groups' do

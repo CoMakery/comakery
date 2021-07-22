@@ -8,5 +8,9 @@ module Refreshable
       last_sync = synced.order(synced_at: :desc).first&.synced_at
       last_sync && last_sync > 10.minutes.ago
     end
+
+    def self.outdate_all
+      update_all(status: :outdated) # rubocop:todo Rails/SkipsModelValidations
+    end
   end
 end

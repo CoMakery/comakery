@@ -42,7 +42,7 @@ RSpec.describe BlockchainJob::ComakerySecurityTokenJob::TransferRulesSyncJob, ty
     expect(permanently_locked_transfer_rules.count).to be_zero
   end
 
-  example 'overwrite existing rules and do not overwrite reg groups' do
+  example 'outdate existing rules and do not overwrite reg groups' do
     reg_group = RegGroup.create!(name: 'Named group', blockchain_id: 1, token: token)
     reg_group_zero = RegGroup.find_by!(token: token, blockchain_id: 0)
     transfer_rule = TransferRule.create!(token: token, sending_group: reg_group_zero, receiving_group: reg_group, lockup_until: Time.current, status: 'synced')
@@ -53,21 +53,21 @@ RSpec.describe BlockchainJob::ComakerySecurityTokenJob::TransferRulesSyncJob, ty
 
     token.reload
     expect(token.reg_groups.count).to eq 10
-    expect(token.transfer_rules.count).to eq 16
+    expect(token.transfer_rules.count).to eq 17
 
     reg_group.reload
     expect(reg_group.token_id).to eq token.id
     expect(reg_group.name).to eq 'Named group'
     expect(reg_group.blockchain_id).to eq 1
 
-    expect(TransferRule.find_by(id: transfer_rule.id)).to be_nil # old rule was deleted
+    expect(transfer_rule.reload.status).to eq 'outdated'
 
     new_transfer_rule = TransferRule.find_by!(token: token, sending_group: reg_group_zero, receiving_group: reg_group, status: 'synced')
     expect(new_transfer_rule.lockup_until).to eq Time.zone.parse('1970-01-01 00:00:01')
     expect(new_transfer_rule.synced_at).to be > 5.seconds.ago
   end
 
-  example 'remove existing rule if last lockup_until in blockchain is 0' do
+  example 'outdated existing rule if last lockup_until in blockchain is 0' do
     allow_any_instance_of(described_class).to receive(:filtered_events).and_return(
       # 0 => 0 with lockup_until=0
       [
@@ -94,9 +94,10 @@ RSpec.describe BlockchainJob::ComakerySecurityTokenJob::TransferRulesSyncJob, ty
 
     described_class.perform_now(token)
 
-    expect(TransferRule.find_by(id: transfer_rule.id)).to be_nil # old rule was deleted
+    expect(transfer_rule.reload.status).to eq 'outdated'
+
     new_transfer_rule = TransferRule.find_by(token: token, sending_group: reg_group_zero, receiving_group: reg_group_zero)
-    expect(new_transfer_rule).to be_nil # no new rule with lockup_until=0
+    expect(new_transfer_rule.status).to eq 'outdated' # outdate new rule with lockup_until=0
   end
 
   example 'with empty results' do

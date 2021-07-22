@@ -24,4 +24,20 @@ shared_examples 'refreshable' do
       end
     end
   end
+
+  describe '.outdate_all' do
+    subject { described_class.outdate_all }
+
+    context 'update status for all records' do
+      before do
+        create(described_class.to_s.underscore.to_sym, status: :synced)
+        create(described_class.to_s.underscore.to_sym, status: :synced)
+      end
+
+      it do
+        subject
+        expect(described_class.all.all?(&:outdated?)).to be true
+      end
+    end
+  end
 end

@@ -87,6 +87,7 @@ class Dashboard::AccountsController < ApplicationController
     if @project.token.account_token_records.fresh?
       notice = 'Accounts were already synced'
     else
+      @project.token.account_token_records.outdate_all
       @project.token.token_type.accounts_sync_job&.perform_now(@project.token)
 
       notice = 'Accounts were synced from the blockchain'
