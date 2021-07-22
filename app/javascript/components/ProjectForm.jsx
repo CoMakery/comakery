@@ -29,7 +29,6 @@ class ProjectForm extends React.Component {
     this.verifyImgSize = this.verifyImgSize.bind(this)
 
     this.squareImgInputRef = React.createRef()
-    this.panoramicImgInputRef = React.createRef()
 
     let awardVisibilitiesPretty = {
       'Only admins can see list of rewards': 'true',
@@ -370,17 +369,6 @@ class ProjectForm extends React.Component {
               imgPreviewDimensions='150x100'
               imgRequirements='The best image size is 1200px x 800px'
               imgInputRef={this.squareImgInputRef}
-            />
-
-            <InputFieldUploadFile
-              title='project image – panoramic'
-              name='project[panoramic_image]'
-              eventHandler={this.verifyImgSize}
-              errors={this.state.errors['project[panoramic_image]']}
-              imgPreviewUrl={this.props.project.panoramicImageUrl}
-              imgPreviewDimensions='375x75'
-              imgRequirements='The best image size is 1500px x 300px'
-              imgInputRef={this.panoramicImgInputRef}
             />
 
             <input

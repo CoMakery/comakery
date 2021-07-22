@@ -57,10 +57,6 @@ describe('ProjectForm', () => {
     )).toBe(true)
 
     expect(wrapper.exists(
-      'InputFieldUploadFile[title="project image – panoramic"][name="project[panoramic_image]"]'
-    )).toBe(true)
-
-    expect(wrapper.exists(
       'input[type="hidden"][name="project[long_id]"]'
     )).toBe(true)
 
@@ -261,7 +257,6 @@ describe('ProjectForm', () => {
       'requireConfidentiality': false,
       'legalProjectOwner'     : 'CoMakery',
       'squareImageUrl'        : '/s.png',
-      'panoramicImageUrl'     : '/p.png'
     }
     const visibilities = [
       'member_unlisted',
@@ -341,10 +336,6 @@ describe('ProjectForm', () => {
     expect(wrapper.find(
       'InputFieldUploadFile[title="project image"][name="project[square_image]"]'
     ).props().imgPreviewUrl).toBe('/s.png')
-
-    expect(wrapper.find(
-      'InputFieldUploadFile[title="project image – panoramic"][name="project[panoramic_image]"]'
-    ).props().imgPreviewUrl).toBe('/p.png')
 
     expect(wrapper.find(
       'input[type="hidden"][name="project[long_id]"]'
