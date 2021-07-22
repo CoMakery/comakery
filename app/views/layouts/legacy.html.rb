@@ -46,7 +46,7 @@ class Views::Layouts::Legacy < Views::Base
 
         render partial: 'layouts/project_search_form' unless @whitelabel_mission
 
-        div(class: "app-container row#{' home' if current_account && action_name == 'join_us'}") do
+        div(class: 'app-container row') do
           message unless current_page?(accounts_path)
           content_for?(:pre_body) ? yield(:pre_body) : ''
           div(class: 'main') do

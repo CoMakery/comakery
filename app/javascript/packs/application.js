@@ -42,9 +42,10 @@ import '@fortawesome/fontawesome-free/scss/solid.scss'
 import 'bootstrap/dist/js/bootstrap.bundle'
 
 import '../src/application.scss'
-import '../src/dist/css/upside.css'
 import '../src/dist/css/upside-vendors.css'
 import '../src/dist/js/upside.js'
+import '../src/dist/css/tabler.css'
+import '../src/dist/css/upside-override.css'
 
 // TODO: enable when tabler migration is ready
 // import '../src/dist/css/tabler.min.css'

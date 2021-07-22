@@ -1,0 +1,143 @@
+<aside id="main-side" class="navbar navbar-vertical navbar-expand-lg navbar-dark navbar-collapsed" data-vertical-navbar-target='mainSide'>
+  <div class="container-fluid">
+    <a class="handbar" role="button" data-action="click->vertical-navbar#toggleVerticalNavbar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="#navbar-menu"></a>
+    <a class="navbar-toggler main-side-handbar" role="button" aria-expanded="false" data-action="click->vertical-navbar#toggleHorizontalNavbar" data-vertical-navbar-target='mainSideToggler'>
+      <span class="navbar-toggler-icon"></span>
+    </a>
+    <h1 class="navbar-brand navbar-brand-autodark">
+      <a href="/">
+        <img src="/static/logo-white.svg" alt="Tabler" class="navbar-brand-image">
+      </a>
+    </h1>
+    <div class="collapse navbar-collapse" id="navbar-menu" data-bs-toggle="collapse" data-vertical-navbar-target='mainSideBody'>
+      <ul class="navbar-nav pt-lg-3">
+        <li class="nav-item <%= active_class(projects_path) %>">
+          <a class="nav-link" href="/projects/mine">
+            <div class="nav-link-icon-active">
+              <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layout-grid" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg>
+              </span>
+            </div>
+            <span class="nav-link-title">
+              Projects
+            </span>
+          </a>
+        </li>
+        <% unless current_account %>
+          <li class="nav-item <%= active_class(new_session_path) %>">
+            <a class="nav-link" href="/session/new">
+              <div class="nav-link-icon-active">
+                <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                </span>
+              </div>
+              <span class="nav-link-title">
+                Sign In
+              </span>
+            </a>
+          </li>
+          <li class="nav-item <%= active_class(new_session_path) %>">
+            <a class="nav-link" href="/accounts/new">
+              <div class="nav-link-icon-active">
+                <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                </span>
+              </div>
+              <span class="nav-link-title">
+                Sign Up
+              </span>
+            </a>
+          </li>
+        <% else %>
+          <li class="nav-item <%= active_class(my_tasks_path) %>">
+            <a class="nav-link" href="/tasks">
+              <div class="nav-link-icon-active">
+                <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.02451 3.92451C5.417 3.92451 4.92451 4.417 4.92451 5.02451V19.0172C4.92451 19.6247 5.417 20.1172 6.02451 20.1172H9.16528C9.66233 20.1172 10.0653 20.5201 10.0653 21.0172C10.0653 21.5142 9.66233 21.9172 9.16528 21.9172H6.02451C4.42289 21.9172 3.12451 20.6188 3.12451 19.0172V5.02451C3.12451 3.42289 4.42289 2.12451 6.02451 2.12451H16.4187C18.0203 2.12451 19.3187 3.42289 19.3187 5.02451V8.67935C19.3187 9.17641 18.9157 9.57935 18.4187 9.57935C17.9216 9.57935 17.5187 9.17641 17.5187 8.67935V5.02451C17.5187 4.417 17.0262 3.92451 16.4187 3.92451H6.02451ZM18.0979 13.7914C18.9898 12.8996 20.4357 12.8996 21.3276 13.7914C22.2194 14.6833 22.2194 16.1292 21.3276 17.021L17.9454 20.4032C17.7059 20.6427 17.425 20.8368 17.1162 20.9759L14.8333 22.005C13.7419 22.497 12.6219 21.3771 13.1139 20.2856L14.143 18.0028C14.2822 17.694 14.4763 17.4131 14.7158 17.1736L18.0979 13.7914ZM20.1962 14.9228C19.9292 14.6558 19.4963 14.6558 19.2293 14.9228L18.9643 15.1877L19.9312 16.1546L20.1962 15.8897C20.4632 15.6227 20.4632 15.1898 20.1962 14.9228ZM18.9413 17.1446L17.9744 16.1777L15.8471 18.305C15.7445 18.4076 15.6613 18.528 15.6017 18.6603L14.8983 20.2207L16.4586 19.5173C16.591 19.4576 16.7114 19.3745 16.814 19.2718L18.9413 17.1446ZM10.8387 6.98172C11.1174 7.24967 11.1261 7.6928 10.8581 7.97148L8.65762 10.26C8.52707 10.3958 8.34732 10.4732 8.15897 10.4748C7.97063 10.4764 7.78959 10.402 7.65675 10.2685L6.52936 9.13516C6.25672 8.86108 6.25789 8.41786 6.53197 8.14522C6.80606 7.87257 7.24927 7.87374 7.52192 8.14783L8.14453 8.77373L9.84893 7.00113C10.1169 6.72246 10.56 6.71377 10.8387 6.98172ZM13.1255 7.79596C12.7389 7.79596 12.4255 8.10936 12.4255 8.49596C12.4255 8.88256 12.7389 9.19596 13.1255 9.19596H15.1818C15.5684 9.19596 15.8818 8.88256 15.8818 8.49596C15.8818 8.10936 15.5684 7.79596 15.1818 7.79596H13.1255ZM10.8387 12.3228C11.1174 12.5908 11.1261 13.0339 10.8581 13.3126L8.65762 15.6011C8.52707 15.7369 8.34732 15.8143 8.15897 15.8159C7.97063 15.8175 7.78959 15.7431 7.65675 15.6096L6.52936 14.4762C6.25672 14.2022 6.25789 13.7589 6.53197 13.4863C6.80606 13.2137 7.24927 13.2148 7.52192 13.4889L8.14453 14.1148L9.84893 12.3422C10.1169 12.0635 10.56 12.0548 10.8387 12.3228ZM13.1255 13.1371C12.7389 13.1371 12.4255 13.4505 12.4255 13.8371C12.4255 14.2237 12.7389 14.5371 13.1255 14.5371H15.1818C15.5684 14.5371 15.8818 14.2237 15.8818 13.8371C15.8818 13.4505 15.5684 13.1371 15.1818 13.1371H13.1255Z" fill="currentColor" />
+                  </svg>
+                </span>
+              </div>
+              <span class="nav-link-title">
+                Tasks
+              </span>
+            </a>
+          </li>
+          <li class="nav-item <%= active_class(wallets_path) %>">
+            <a class="nav-link" href="/wallets">
+              <div class="nav-link-icon-active">
+                <span class="nav-link-icon d-lg-inline-block nav-link-icon-wallet">
+                  <svg width="16.67" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19 6.55773C19 5.0609 17.7943 3.83259 16.2584 3.70763L15.6224 1.93532C15.0695 0.394627 13.2812 -0.395792 11.6908 0.197587L2.13569 3.76269C2.04025 3.7983 1.95378 3.84635 1.87753 3.90413C0.776754 4.32788 0 5.35631 0 6.55773V15.1394C0 16.7193 1.34315 18 3 18L16 18C17.6569 18 19 16.7193 19 15.1394V12.9773C19.5978 12.6475 20 12.0312 20 11.3253V9.4183C20 8.71242 19.5978 8.09612 19 7.76638V6.55773ZM17 7.51125V6.55773C17 6.03112 16.5523 5.60421 16 5.60421L3 5.60421C2.44772 5.60421 2 6.03112 2 6.55773L2 15.1394C2 15.666 2.44772 16.093 3 16.093L16 16.093C16.5523 16.093 17 15.666 17 15.1394V13.2324H16C14.3431 13.2324 13 11.9517 13 10.3718C13 8.79198 14.3431 7.51126 16 7.51125H17ZM13.7301 2.55276L14.1408 3.69716L7.7999 3.69717L12.4196 1.97351C12.9497 1.77572 13.5458 2.03919 13.7301 2.55276ZM15 10.3718C15 9.84521 15.4477 9.4183 16 9.4183H18V11.3253H16C15.4477 11.3253 15 10.8984 15 10.3718Z" fill="currentColor"></path>
+                  </svg>
+                </span>
+              </div>
+              <span class="nav-link-title">
+                Wallets
+              </span>
+            </a>
+          </li>
+          <% if current_account.comakery_admin? %>
+            <li class="nav-item dropdown" data-vertical-navbar-target='Dropdown'>
+              <div class="collapsed-dropdown" data-vertical-navbar-target='collapsedDropdown'>
+                <a class="nav-link collapsed-dropdown" role="button" data-action="click->vertical-navbar#toggleVerticalNavbar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="#navbar-menu">
+                  <div class="nav-link-icon-active">
+                    <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
+                    </span>
+                  </div>
+                </a>
+              </div>
+              <a class="nav-link dropdown-btn dropdown-toggle collapsed-full-dropdown" role="button" data-bs-toggle="dropdown" data-vertical-navbar-target='collapsedFullDropdown'>
+                <div class="nav-link-icon-active">
+                  <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
+                  </span>
+                </div>
+                <span class="nav-link-title">
+                  Organization
+                </span>
+              </a>
+              <div class="dropdown-menu" data-vertical-navbar-target='DropdownMenu'>
+                <div class="dropdown-menu-columns">
+                  <div class="dropdown-menu-column">
+                    <a class="dropdown-item" href="/missions">
+                      <span class="nav-link-title">
+                        Mission Admin
+                      </span>
+                    </a>
+                    <a class="dropdown-item" href="/tokens">
+                      <span class="nav-link-title">
+                        Tokens Admin
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+          <li class="nav-item">
+            <a class="nav-link" href="/session" data-method="delete">
+              <div class="nav-link-icon-active">
+                <span class="nav-link-icon d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                </span>
+              </div>
+              <span class="nav-link-title">
+                Sign Out
+              </span>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% if current_account %>
+      <a class="nav-link avatar-link" href="/account">
+        <div class="profile d-flex flex-row align-items-center nav-link-avatar">
+          <img class="rounded-circle" width="30" height="30" src="<%= account_image_url(current_account, 30) %>">
+          <span class="ms-2 nav-link-title"><%= current_account.name %></span>
+        </div>
+      </a>
+    <% end %>
+  </div>
+</aside>

@@ -184,7 +184,7 @@ html, body{
   }
 }
 
-.pages-join_us, .pages-featured{
+.pages-featured{
   font-size: 14px;
   h1{
     font-size: 34px;
@@ -210,11 +210,6 @@ html, body{
   }
 }
 
-@media(min-width: 1170px){
-  .pages-join_us .home h1{
-    margin-top: 220px !important;
-  }
-}
 .blue-box{
   border: 2px solid #5037f7;
   border-top: none;

@@ -2,11 +2,6 @@ require 'rails_helper'
 require 'refile/file_double'
 
 feature 'pages' do
-  scenario '#join_us' do
-    visit joinus_path
-    expect(page).to have_content 'JOIN INCREDIBLE BLOCKCHAIN PROJECTS'
-  end
-
   scenario '#user_agreement' do
     visit user_agreement_path
     expect(page).to have_content 'User Agreement'

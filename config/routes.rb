@@ -42,7 +42,6 @@ Rails.application.routes.draw do
 
   get '/logout', to: "sessions#destroy"
 
-  get '/joinus' => "pages#join_us"
   get '/user-agreement' => "pages#user_agreement"
   get '/e-sign-disclosure' => "pages#e_sign_disclosure"
   get '/privacy-policy' => "pages#privacy_policy"
